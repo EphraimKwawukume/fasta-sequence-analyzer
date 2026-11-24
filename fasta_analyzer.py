@@ -25,7 +25,8 @@ def parse_fasta (fasta):
 def calc_gc_percent(seq):
     gc_count = seq.count('G') + seq.count('C')
     if len(seq) == 0:
-      return 0.0
+      return 0.0 
+    #this is so that we dont get an error trying to divide by zero
     gc_percent = (gc_count/len(seq))* 100
     return round (gc_percent, 2)
 
@@ -39,7 +40,6 @@ def count_stop_codons(seq):
     return num
 
 parsed = parse_fasta("samples.fasta")
-print(parsed)
 
 for header, seq in parsed.items():
     print(header)
