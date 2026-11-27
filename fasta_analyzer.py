@@ -1,3 +1,17 @@
+import sys
+
+if len(sys.argv) < 2:
+    print("Usage: python fasta_analyzer.py <input.fasta> [output.tsv]")
+    sys.exit(1)
+
+input_fasta = sys.argv[1]
+
+if len(sys.argv) >= 3:
+    output_tsv = sys.argv[2]
+else:
+    output_tsv = "summary.tsv"
+
+
 
 def parse_fasta (fasta):
     header = "unknown_header" 
@@ -21,7 +35,6 @@ def parse_fasta (fasta):
                 sequences[header] = nuc
     return sequences
 
-
 def calc_gc_percent(seq):
     gc_count = seq.count('G') + seq.count('C')
     if len(seq) == 0:
@@ -39,23 +52,20 @@ def count_stop_codons(seq):
             num += 1
     return num
 
-parsed = parse_fasta("samples.fasta")
-print(parsed)
+def write_summary_report(output_tsv, parsed):
+    with open(output_tsv,'w', encoding='utf-8') as output:
+        output.write("Sequence_ID\tLength_bp\tGC_Percent\tA_Count\tT_Count\tG_Count\tC_Count\tStop_Codons\n")
+        for header,seq in parsed.items():
+            length = len(seq)
+            GC_percent = calc_gc_percent(seq)
+            A_count = seq.count('A')
+            G_count = seq.count('G')
+            C_count = seq.count('C')
+            T_count = seq.count('T')
+            stops = count_stop_codons(seq)
+            row = f"{header}\t{length}\t{GC_percent}\t{A_count}\t{T_count}\t{G_count}\t{C_count}\t{stops}\n"
+            output.write(row)
 
-for header, seq in parsed.items():
-    print(header)
-    print('GC% :',calc_gc_percent(seq))
-    print('stop codon count :',count_stop_codons(seq))
-    print("-" * 30)
-with open('summary.tsv','w', encoding='utf-8') as output:
-    output.write("Sequence_ID\tLength_bp\tGC_Percent\tA_Count\tT_Count\tG_Count\tC_Count\tStop_Codons\n")
-    for header,seq in parsed.items():
-        length = len(seq)
-        GC_percent = calc_gc_percent(seq)
-        A_count = seq.count('A')
-        G_count = seq.count('G')
-        C_count = seq.count('C')
-        T_count = seq.count('T')
-        stops = count_stop_codons(seq)
-        row = f"{header}\t{length}\t{GC_percent}\t{A_count}\t{T_count}\t{G_count}\t{C_count}\t{stops}\n"
-        output.write(row)
+parsed = parse_fasta(input_fasta)
+write_summary_report(output_tsv, parsed)
+print(f"Done! Analyzed {len(parsed)} sequences from {input_fasta} -> {output_tsv}")
