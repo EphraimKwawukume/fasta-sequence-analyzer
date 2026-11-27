@@ -35,14 +35,27 @@ def count_stop_codons(seq):
     stop_codons =["TAA", "TAG", "TGA"]
     for i in range(0,len(seq),3):
         codon = seq[i:i+3]
-    if  codon in stop_codons:
-        num += 1
+        if  codon in stop_codons:
+            num += 1
     return num
 
 parsed = parse_fasta("samples.fasta")
+print(parsed)
 
 for header, seq in parsed.items():
     print(header)
     print('GC% :',calc_gc_percent(seq))
     print('stop codon count :',count_stop_codons(seq))
     print("-" * 30)
+with open('summary.tsv','w', encoding='utf-8') as output:
+    output.write("Sequence_ID\tLength_bp\tGC_Percent\tA_Count\tT_Count\tG_Count\tC_Count\tStop_Codons\n")
+    for header,seq in parsed.items():
+        length = len(seq)
+        GC_percent = calc_gc_percent(seq)
+        A_count = seq.count('A')
+        G_count = seq.count('G')
+        C_count = seq.count('C')
+        T_count = seq.count('T')
+        stops = count_stop_codons(seq)
+        row = f"{header}\t{length}\t{GC_percent}\t{A_count}\t{T_count}\t{G_count}\t{C_count}\t{stops}\n"
+        output.write(row)

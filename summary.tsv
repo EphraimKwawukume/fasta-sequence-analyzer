@@ -1,0 +1,5 @@
+Sequence_ID	Length_bp	GC_Percent	A_Count	T_Count	G_Count	C_Count	Stop_Codons
+unknown_header	27	55.56	7	5	5	10	0
+gene_01_gyrA_resistant	49	46.94	13	13	12	11	2
+gene_02_rpoB_wildtype	37	94.59	1	1	17	18	0
+gene_03_mecA_fragment	21	0.0	10	11	0	0	2
